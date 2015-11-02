@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">OotsViewer</string>
+
+    <string name="no_network_connection_toast">No network connection found</string>
+    <string name="buttonBack">Back</string>
+    <string name="loadStripButton">Load</string>
+    <string name="nextButton">Next</string>
+</resources>
