@@ -19,9 +19,9 @@ package de.smilix.ootsviewer.util;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
 
 import de.smilix.ootsviewer.BuildConfig;
-import de.smilix.ootsviewer.logger.Log;
 
 /**
  * A BitmapDrawable that keeps track of whether it is being displayed or cached.

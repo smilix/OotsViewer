@@ -22,11 +22,11 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.util.Log;
 
 import java.io.FileDescriptor;
 
 import de.smilix.ootsviewer.BuildConfig;
-import de.smilix.ootsviewer.logger.Log;
 
 /**
  * A simple subclass of {@link ImageWorker} that resizes images from resources given a target width

@@ -26,10 +26,10 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.widget.ImageView;
 
 import de.smilix.ootsviewer.BuildConfig;
-import de.smilix.ootsviewer.logger.Log;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 import java.lang.ref.WeakReference;

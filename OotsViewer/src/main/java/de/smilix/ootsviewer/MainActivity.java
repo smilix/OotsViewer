@@ -7,13 +7,12 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import de.smilix.ootsviewer.R;
-import de.smilix.ootsviewer.logger.Log;
-import de.smilix.ootsviewer.logger.LogWrapper;
 import de.smilix.ootsviewer.util.ImageCache;
 import de.smilix.ootsviewer.util.ImageFetcher;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -37,8 +36,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         super.onCreate(savedInstanceState);
 
         loadStripNumber();
-
-        Log.setLogNode(new LogWrapper());
 
         setContentView(R.layout.activity_main);
 

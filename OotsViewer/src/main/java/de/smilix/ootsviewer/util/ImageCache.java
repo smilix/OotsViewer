@@ -30,6 +30,7 @@ import android.os.StatFs;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.util.LruCache;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -46,7 +47,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import de.smilix.ootsviewer.BuildConfig;
-import de.smilix.ootsviewer.logger.Log;
 
 /**
  * This class handles disk and memory caching of bitmaps in conjunction with the

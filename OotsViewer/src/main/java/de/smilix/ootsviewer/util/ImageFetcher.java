@@ -21,11 +21,11 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.util.Log;
 import android.widget.Toast;
 
 import de.smilix.ootsviewer.BuildConfig;
 import de.smilix.ootsviewer.R;
-import de.smilix.ootsviewer.logger.Log;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
