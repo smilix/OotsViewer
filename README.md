@@ -4,9 +4,13 @@ Gets the comic from the homepage and shows it.
 
 # Features
 
-* Easy navigation (back, forward, jump to number)
+* Easy navigation (back, forward, jump to number), supports slide gestures.
 * Zoom support
 
+# TODO
+
+* Fix the "PhotoViewAttacher: ImageView no longer exists. You should not use this PhotoViewAttacher any more."
+* The image is after loading not properly positioned. 
 
 # Acknowledgments & Third-party Licenses
 
