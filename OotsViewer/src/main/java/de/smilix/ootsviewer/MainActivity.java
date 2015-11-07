@@ -68,6 +68,10 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         return 1011;
     }
 
+    private int convertComicNumberToIndex(int comicNumber) {
+        return comicNumber - 1;
+    }
+
     private void saveStripNumber() {
         SharedPreferences settings = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
@@ -82,7 +86,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
     }
 
     private void updateImage() {
-        this.pager.setCurrentItem(this.currentStrip - 1, false);
+        this.pager.setCurrentItem(convertComicNumberToIndex(this.currentStrip), false);
     }
 
     private void updateTextField() {
@@ -152,9 +156,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                     Log.d(TAG, "Already at first comic.");
                     return;
                 }
-                this.currentStrip--;
-                updateTextField();
-                updateImage();
+                this.pager.setCurrentItem(convertComicNumberToIndex(this.currentStrip - 1), true);
                 break;
 
             case R.id.next:
@@ -162,9 +164,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                     Log.d(TAG, "Max comic number reached.");
                     return;
                 }
-                this.currentStrip++;
-                updateTextField();
-                updateImage();
+                this.pager.setCurrentItem(convertComicNumberToIndex(this.currentStrip + 1), true);
                 break;
         }
     }
