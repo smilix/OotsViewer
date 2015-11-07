@@ -1,28 +1,33 @@
 package de.smilix.ootsviewer;
 
 import android.content.SharedPreferences;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import de.smilix.ootsviewer.R;
 import de.smilix.ootsviewer.logger.Log;
+import de.smilix.ootsviewer.logger.LogWrapper;
 import de.smilix.ootsviewer.util.ImageCache;
 import de.smilix.ootsviewer.util.ImageFetcher;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements ViewPager.OnPageChangeListener {
 
-    private static final String TAG = "ActionBarActivity";
-    private static final String IMAGE_CACHE_DIR = "images";
+    private static final String TAG = MainActivity.class.toString();
     private static final String CURRENT_STRIP = "currentStrip";
     private static final String PREFS_NAME = "settings";
 
+    private static final String IMAGE_CACHE_DIR = "images";
+
     private ImageFetcher imageFetcher;
-    private ImageView imageView;
-    private PhotoViewAttacher mAttacher;
+    private ViewPager pager;
 
     private int currentStrip = 1;
     private boolean editMode = false;
@@ -32,6 +37,8 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
 
         loadStripNumber();
+
+        Log.setLogNode(new LogWrapper());
 
         setContentView(R.layout.activity_main);
 
@@ -44,13 +51,21 @@ public class MainActivity extends FragmentActivity {
         this.imageFetcher.addImageCache(getSupportFragmentManager(), cacheParams);
         this.imageFetcher.setImageFadeIn(true);
 
-        this.imageView = (ImageView) findViewById(R.id.imageView);
-
-        // Attach a PhotoViewAttacher, which takes care of all of the zooming functionality.
-        this.mAttacher = new PhotoViewAttacher(this.imageView);
+        this.pager = (ViewPager) findViewById(R.id.viewpager);
+        // he adapter feeds the image pages
+        StripPagerAdapter adapter = new StripPagerAdapter(getSupportFragmentManager());
+        this.pager.setAdapter(adapter);
+        // adds a listener to update the counter
+        this.pager.addOnPageChangeListener(this);
 
         updateTextField();
         updateImage();
+    }
+
+    private int getMaxComicNumber() {
+        // this is the most current comic
+        // TODO: fetch this info from the network
+        return 1011;
     }
 
     private void saveStripNumber() {
@@ -63,13 +78,11 @@ public class MainActivity extends FragmentActivity {
     private void loadStripNumber() {
         SharedPreferences settings = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
         this.currentStrip = settings.getInt(CURRENT_STRIP, 1);
-        System.out.println("loaded strip: " + this.currentStrip);
+        Log.d(TAG, "loaded strip settings: " + this.currentStrip);
     }
 
     private void updateImage() {
-        String url = String.format("http://www.giantitp.com/comics/images/oots%04d.gif", this.currentStrip);
-        Log.d(TAG, "Loading image: " + url);
-        this.imageFetcher.loadImage(url, this.imageView, this.mAttacher);
+        this.pager.setCurrentItem(this.currentStrip - 1, false);
     }
 
     private void updateTextField() {
@@ -135,18 +148,63 @@ public class MainActivity extends FragmentActivity {
                 break;
 
             case R.id.prev:
+                if (this.currentStrip == 1) {
+                    Log.d(TAG, "Already at first comic.");
+                    return;
+                }
                 this.currentStrip--;
                 updateTextField();
                 updateImage();
                 break;
 
             case R.id.next:
+                if (this.currentStrip == getMaxComicNumber()) {
+                    Log.d(TAG, "Max comic number reached.");
+                    return;
+                }
                 this.currentStrip++;
                 updateTextField();
                 updateImage();
                 break;
         }
+    }
 
+    /*
+     * OnPageChangeListener functions
+     */
 
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        this.currentStrip = position + 1;
+        MainActivity.this.updateTextField();
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+    }
+
+    private class StripPagerAdapter extends FragmentStatePagerAdapter {
+
+        public StripPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Log.d(TAG, "Get item for position: " + position);
+            int comicNumber = position + 1;
+            ComicStripFragment fragment = ComicStripFragment.create(comicNumber);
+            fragment.loadImage(MainActivity.this.imageFetcher);
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return MainActivity.this.getMaxComicNumber();
+        }
     }
 }
