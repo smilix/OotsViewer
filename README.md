@@ -9,8 +9,8 @@ Gets the comic from the homepage and shows it.
 
 # TODO
 
-* Fix the "PhotoViewAttacher: ImageView no longer exists. You should not use this PhotoViewAttacher any more."
-* The image is after loading not properly positioned. 
+* The image is after loading not properly positioned.
+* Waiting text/image
 
 # Acknowledgments & Third-party Licenses
 

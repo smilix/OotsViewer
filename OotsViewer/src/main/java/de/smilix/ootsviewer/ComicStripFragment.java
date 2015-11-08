@@ -64,6 +64,13 @@ public class ComicStripFragment extends Fragment {
         loadImageIfPossible();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // avoids the warning "PhotoViewAttacher: ImageView no longer exists. You should not use this PhotoViewAttacher any more."
+        this.attacher.cleanup();
+    }
+
     private void loadImageIfPossible() {
         if (this.imageFetcher == null) {
             return;
