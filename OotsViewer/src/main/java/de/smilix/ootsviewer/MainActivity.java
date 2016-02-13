@@ -8,11 +8,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import de.smilix.ootsviewer.R;
+import de.smilix.ootsviewer.ui.DeactivatableViewPager;
 import de.smilix.ootsviewer.util.ImageCache;
 import de.smilix.ootsviewer.util.ImageFetcher;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -26,7 +28,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
     private static final String IMAGE_CACHE_DIR = "images";
 
     private ImageFetcher imageFetcher;
-    private ViewPager pager;
+    private DeactivatableViewPager pager;
 
     private int currentStrip = 1;
     private boolean editMode = false;
@@ -48,12 +50,15 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         this.imageFetcher.addImageCache(getSupportFragmentManager(), cacheParams);
         this.imageFetcher.setImageFadeIn(true);
 
-        this.pager = (ViewPager) findViewById(R.id.viewpager);
+        this.pager = (DeactivatableViewPager) findViewById(R.id.viewpager);
         // he adapter feeds the image pages
         StripPagerAdapter adapter = new StripPagerAdapter(getSupportFragmentManager());
         this.pager.setAdapter(adapter);
         // adds a listener to update the counter
         this.pager.addOnPageChangeListener(this);
+
+        // TODO: make an option from this
+        this.pager.setEnabled(false);
 
         updateTextField();
         updateImage();
