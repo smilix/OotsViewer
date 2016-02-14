@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -64,6 +65,10 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         updateImage();
     }
 
+    public ImageFetcher getImageFetcher() {
+        return this.imageFetcher;
+    }
+
     private int getMaxComicNumber() {
         // this is the most current comic
         // TODO: fetch this info from the network
@@ -108,6 +113,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         this.imageFetcher.flushCache();
         saveStripNumber();
     }
+
+
 
     @Override
     protected void onDestroy() {
@@ -200,7 +207,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             Log.d(TAG, "Get item for position: " + position);
             int comicNumber = position + 1;
             ComicStripFragment fragment = ComicStripFragment.create(comicNumber);
-            fragment.loadImage(MainActivity.this.imageFetcher);
             return fragment;
         }
 

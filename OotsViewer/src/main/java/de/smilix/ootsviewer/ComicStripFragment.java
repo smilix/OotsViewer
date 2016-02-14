@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import de.smilix.ootsviewer.ui.RecyclingImageView;
 import de.smilix.ootsviewer.util.ImageFetcher;
+import de.smilix.ootsviewer.util.ImageWorker;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
@@ -24,13 +26,12 @@ public class ComicStripFragment extends Fragment {
 
     private ImageView imageView;
     private PhotoViewAttacher attacher;
-    private ImageFetcher imageFetcher;
-
 
     /**
      * Factory method for this fragment class. Constructs a new fragment for the given page number.
      */
     public static ComicStripFragment create(int comicNumber) {
+        Log.d(TAG, "new ComicStripFragment for comic " + comicNumber);
         ComicStripFragment fragment = new ComicStripFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COMIC_NUMBER, comicNumber);
@@ -50,18 +51,27 @@ public class ComicStripFragment extends Fragment {
                 R.layout.comic_page, container, false);
 
         this.imageView = (ImageView) rootView.findViewById(R.id.imageView);
-        // Attach a PhotoViewAttacher, which takes care of all of the zooming functionality.
-        this.attacher = new PhotoViewAttacher(this.imageView);
-
-        loadImageIfPossible();
 
         return rootView;
     }
 
 
-    public void loadImage(ImageFetcher imageFetcher) {
-        this.imageFetcher = imageFetcher;
-        loadImageIfPossible();
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        Log.d(TAG, "onActivityCreated " + getArguments().getInt(ARG_COMIC_NUMBER));
+
+        if (MainActivity.class.isInstance(getActivity())) {
+            ImageFetcher imageFetcher = ((MainActivity) getActivity()).getImageFetcher();
+            int comicNumber = getArguments().getInt(ARG_COMIC_NUMBER);
+            String url = String.format(URL_TEMPLATE, comicNumber);
+            Log.i(TAG, "Loading image: " + url);
+
+            // Attach a PhotoViewAttacher, which takes care of all of the zooming functionality.
+            this.attacher = new PhotoViewAttacher(this.imageView);
+            imageFetcher.loadImage(url, this.imageView, this.attacher);
+        }
     }
 
     @Override
@@ -69,18 +79,11 @@ public class ComicStripFragment extends Fragment {
         super.onDestroyView();
         // avoids the warning "PhotoViewAttacher: ImageView no longer exists. You should not use this PhotoViewAttacher any more."
         this.attacher.cleanup();
-    }
-
-    private void loadImageIfPossible() {
-        if (this.imageFetcher == null) {
-            return;
+        this.attacher = null;
+        Log.d(TAG, "Destroy comic view " + getArguments().getInt(ARG_COMIC_NUMBER));
+        if (this.imageView != null) {
+            ImageWorker.cancelWork(this.imageView);
+            this.imageView.setImageDrawable(null);
         }
-        if (this.imageView == null) {
-            return;
-        }
-        int comicNumber = getArguments().getInt(ARG_COMIC_NUMBER);
-        String url = String.format(URL_TEMPLATE, comicNumber);
-        Log.i(TAG, "Loading image: " + url);
-        this.imageFetcher.loadImage(url, this.imageView, this.attacher);
     }
 }
