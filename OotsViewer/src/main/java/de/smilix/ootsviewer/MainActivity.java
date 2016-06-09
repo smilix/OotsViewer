@@ -1,26 +1,21 @@
 package de.smilix.ootsviewer;
 
 import android.content.SharedPreferences;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageView;
 
-import de.smilix.ootsviewer.R;
 import de.smilix.ootsviewer.ui.DeactivatableViewPager;
+import de.smilix.ootsviewer.ui.FullscreenFragmentActivity;
 import de.smilix.ootsviewer.util.ImageCache;
 import de.smilix.ootsviewer.util.ImageFetcher;
-import uk.co.senab.photoview.PhotoViewAttacher;
 
-public class MainActivity extends FragmentActivity implements ViewPager.OnPageChangeListener {
+public class MainActivity extends FullscreenFragmentActivity implements ViewPager.OnPageChangeListener {
 
     private static final String TAG = MainActivity.class.toString();
     private static final String CURRENT_STRIP = "currentStrip";
@@ -47,7 +42,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
 
         // The ImageFetcher takes care of loading images into our ImageView children asynchronously
-        this.imageFetcher = new ImageFetcher(this, 1000);
+        // 04-17 13:17:01.906 7299-7365/de.smilix.ootsviewer W/OpenGLRenderer: Bitmap too large to be uploaded into a texture (766x2733, max=2048x2048)
+        this.imageFetcher = new ImageFetcherMaxSize(this, 2048);
         this.imageFetcher.addImageCache(getSupportFragmentManager(), cacheParams);
         this.imageFetcher.setImageFadeIn(true);
 
@@ -68,6 +64,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
     public ImageFetcher getImageFetcher() {
         return this.imageFetcher;
     }
+
 
     private int getMaxComicNumber() {
         // this is the most current comic
@@ -113,7 +110,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         this.imageFetcher.flushCache();
         saveStripNumber();
     }
-
 
 
     @Override
