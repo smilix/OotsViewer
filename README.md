@@ -2,6 +2,8 @@
 
 Gets the comic from the homepage and shows it.
 
+Abandoned. Use [OotsViewer2](https://github.com/smilix/OotsViewer2) instead.
+
 # Features
 
 * Easy navigation (back, forward, jump to number), supports slide gestures.
